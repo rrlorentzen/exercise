@@ -1,7 +1,8 @@
 plugins {
   id 'java'
-  id 'org.springframework.boot' version '3.4.2'
-  id 'io.spring.dependency-management' version '1.1.7'
+  id 'idea'
+  alias libs.plugins.spring.boot
+  alias libs.plugins.spring.dependency.management
 }
 
 group = 'dev.lorentzen.branch'
@@ -17,14 +18,58 @@ repositories {
   mavenCentral()
 }
 
-dependencies {
-  implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  testImplementation 'io.projectreactor:reactor-test'
-  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+configurations {
+  integrationApi.extendsFrom testApi
+  integrationCompile.extendsFrom testCompile
+  integrationImplementation.extendsFrom testImplementation
+  integrationRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
-tasks.named('test') {
+dependencies {
+  implementation libs.bundles.spring.boot.starter
+  testImplementation libs.spring.boot.starter.test
+}
+
+sourceSets {
+  integration {
+    java {
+      srcDirs = ['src/integration/java']
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+    }
+    resources.srcDirs = main.resources.srcDirs + test.resources.srcDirs + ['src/integration/resources']
+  }
+}
+
+idea {
+  module {
+    testSources.from(sourceSets.integration.java.srcDirs)
+  }
+}
+
+springBoot {
+  buildInfo()
+}
+
+def integrationTest = tasks.register('integrationTest', Test) {
+  group 'verification'
+  testClassesDirs = sourceSets.integration.output.classesDirs
+  classpath = sourceSets.integration.runtimeClasspath
+}
+
+tasks.withType(Test).configureEach {
   useJUnitPlatform()
+  testLogging {
+    events 'passed', 'skipped', 'failed'
+  }
+}
+
+tasks.named('check') {
+  dependsOn(integrationTest)
+}
+
+tasks.configureEach {
+  if (it instanceof JavaForkOptions) {
+    it.systemProperties System.properties
+  }
 }

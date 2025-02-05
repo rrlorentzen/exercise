@@ -13,6 +13,11 @@ Branch App Coding Exercise
 ./gradlew clean test
 ```
 
+### Running Integration Tests
+```shell
+./gradlew clean integrationTest
+```
+
 ### Running All Tests
 ```shell
 ./gradlew clean check
