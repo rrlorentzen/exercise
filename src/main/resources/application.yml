@@ -2,3 +2,41 @@
 spring:
   application:
     name: exercise
+  threads:
+    virtual:
+      enabled: true
+
+## Github Api
+github:
+  api:
+    url: https://api.github.com
+    version: 2022-11-28
+    cache:
+      expiration-seconds: 60
+      maximum-size: 100
+
+## Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
+
+## Open API Documentation
+springdoc:
+  show-actuator: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /docs
+    urlsPrimaryName: Exercise API
+
+## Logging
+logging:
+  level:
+    root: info
+    dev.lorentzen.branch.exercise: debug
