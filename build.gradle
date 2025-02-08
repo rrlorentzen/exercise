@@ -1,6 +1,7 @@
 plugins {
   id 'java'
   id 'idea'
+  alias libs.plugins.os.detector
   alias libs.plugins.spring.boot
   alias libs.plugins.spring.dependency.management
 }
@@ -18,16 +19,8 @@ repositories {
   mavenCentral()
 }
 
-configurations {
-  integrationApi.extendsFrom testApi
-  integrationCompile.extendsFrom testCompile
-  integrationImplementation.extendsFrom testImplementation
-  integrationRuntimeOnly.extendsFrom testRuntimeOnly
-}
-
-dependencies {
-  implementation libs.bundles.spring.boot.starter
-  testImplementation libs.spring.boot.starter.test
+springBoot {
+  buildInfo()
 }
 
 sourceSets {
@@ -47,8 +40,22 @@ idea {
   }
 }
 
-springBoot {
-  buildInfo()
+configurations {
+  integrationApi.extendsFrom testApi
+  integrationCompile.extendsFrom testCompile
+  integrationImplementation.extendsFrom testImplementation
+  integrationRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+dependencies {
+  implementation libs.apache.commons.lang
+  implementation libs.bundles.spring.boot.starter
+  implementation libs.caffeine
+  implementation libs.springdoc.openapi.ui
+  if (osdetector.arch == "aarch_64") {
+     implementation "io.netty:netty-resolver-dns-native-macos:4.1.117.Final:osx-aarch_64"
+  }
+  testImplementation libs.spring.boot.starter.test
 }
 
 def integrationTest = tasks.register('integrationTest', Test) {

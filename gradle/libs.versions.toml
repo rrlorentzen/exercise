@@ -1,15 +1,30 @@
 [versions]
+apache-commons-lang = "3.17.0"
+caffeine = "3.2.0"
+os-detector = "1.7.0"
 spring-boot = "3.4.2"
 spring-dependency-management = "1.1.7"
+springdoc-openapi = "2.8.4"
 
 [plugins]
+os-detector = { id = "com.google.osdetector", version.ref = "os-detector" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
 
 [libraries]
+apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "apache-commons-lang" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
-spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+spring-boot-starter-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc-openapi" }
 
 [bundles]
-spring-boot-starter = ["spring-boot-starter-actuator", "spring-boot-starter-webflux"]
+spring-boot-starter = [
+    "spring-boot-starter-actuator",
+    "spring-boot-starter-cache",
+    "spring-boot-starter-validation",
+    "spring-boot-starter-webflux"
+]
